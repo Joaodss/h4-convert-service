@@ -14,4 +14,7 @@ public interface AccountProxy {
   @PostMapping
   AccountDTO create(@RequestBody AccountDTO accountDTO);
 
+  @DeleteMapping("/{id}")
+  void remove(@PathVariable("id") Long id);
+
 }

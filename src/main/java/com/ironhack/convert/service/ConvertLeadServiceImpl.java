@@ -2,9 +2,14 @@ package com.ironhack.convert.service;
 
 import com.ironhack.convert.dto.*;
 import com.ironhack.convert.proxy.*;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
+
+import static com.ironhack.convert.service.Event.*;
 
 @Service
 public class ConvertLeadServiceImpl implements ConvertLeadService {
@@ -13,6 +18,8 @@ public class ConvertLeadServiceImpl implements ConvertLeadService {
   private final LeadProxy leadProxy;
   private final OpportunityProxy opportunityProxy;
   private final SalesRepProxy salesRepProxy;
+
+  private Map<Event, Long> events;
 
   // ---------- Constructor Dependency Injection ----------
   public ConvertLeadServiceImpl(AccountProxy accountProxy, ContactProxy contactProxy, LeadProxy leadProxy, OpportunityProxy opportunityProxy, SalesRepProxy salesRepProxy) {
@@ -26,6 +33,7 @@ public class ConvertLeadServiceImpl implements ConvertLeadService {
 
   // -------------------- Service Methods --------------------
   public ConvertInformationDTO convertLead(long leadId, LeadConvertDTO leadConvertDTO) {
+    events = new HashMap<>();
     LeadDTO leadToConvert;
     SalesRepDTO salesRepDTO;
     AccountDTO accountDTO = null;
@@ -71,32 +79,67 @@ public class ConvertLeadServiceImpl implements ConvertLeadService {
     return new ConvertInformationDTO(salesRepDTO, accountDTO, contactDTO, opportunityDTO);
   }
 
-  public LeadDTO getLeadById(long id) {
+
+  // -------------------- Aux Methods --------------------
+  @Retry(name = "getLeadRetry")
+  private LeadDTO getLeadById(long id) {
     return leadProxy.getLeadById(id);
   }
 
-  public AccountDTO getAccountById(long id) {
+  @Retry(name = "getAccountRetry")
+  private AccountDTO getAccountById(long id) {
     return accountProxy.findById(id);
   }
 
-  public SalesRepDTO getSalesRepById(long id) {
+  @Retry(name = "getSalesRepRetry", fallbackMethod = "restore")
+  private SalesRepDTO getSalesRepById(long id) {
     return salesRepProxy.findById(id);
   }
 
-  public AccountDTO createNewAccount(AccountDTO accountDTO) {
-    return accountProxy.create(accountDTO);
+  @Retry(name = "createNewAccountRetry", fallbackMethod = "restore")
+  private AccountDTO createNewAccount(AccountDTO accountDTO) {
+    AccountDTO createdAccount = accountProxy.create(accountDTO);
+    events.put(CREATE_ACCOUNT, createdAccount.getId());
+    return createdAccount;
   }
 
-  public ContactDTO createNewContact(NewContactDTO newContactDTO) {
-    return contactProxy.store(newContactDTO);
+  @Retry(name = "getSalesRepRetry", fallbackMethod = "restore")
+  private ContactDTO createNewContact(NewContactDTO newContactDTO) {
+    ContactDTO createdContact = contactProxy.store(newContactDTO);
+    events.put(CREATE_CONTACT, createdContact.getId());
+    return createdContact;
   }
 
-  public OpportunityDTO createNewOpportunity(NewOpportunityDTO newOpportunityDTO) {
-    return opportunityProxy.createOpp(newOpportunityDTO);
+  @Retry(name = "getSalesRepRetry", fallbackMethod = "restore")
+  private OpportunityDTO createNewOpportunity(NewOpportunityDTO newOpportunityDTO) {
+    OpportunityDTO createdOpportunity = opportunityProxy.createOpp(newOpportunityDTO);
+    events.put(CREATE_OPPORTUNITY, createdOpportunity.getId());
+    return createdOpportunity;
   }
 
-  public LeadDTO deleteLead(long id) {
-    return leadProxy.deleteLeadById(id);
+  @Retry(name = "getSalesRepRetry", fallbackMethod = "restore")
+  private void deleteLead(long id) {
+    leadProxy.deleteLeadById(id);
   }
 
+
+  // TODO [JA] - Ask for remaining elements. Test to check if restore is called.
+  // -------------------- Fall back Methods --------------------
+  private void restore() {
+    for (Event key : events.keySet()) {
+      switch (key) {
+        case CREATE_ACCOUNT -> accountProxy.remove(events.get(key));
+//        case CREATE_CONTACT ->           contactProxy.remove(events.get(key))
+//        case CREATE_OPPORTUNITY -> opportunityProxy.remove(events.get(key));
+      }
+    }
+    throw new RuntimeException("It was not possible to complete the convert request. A service must be down. Please try again later.");
+  }
+
+}
+
+enum Event {
+  CREATE_ACCOUNT,
+  CREATE_CONTACT,
+  CREATE_OPPORTUNITY
 }
