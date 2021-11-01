@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ConvertInformationDTO {
-  private ContactDTO contact;
   private SalesRepDTO salesRep;
-  private OpportunityDTO opportunity;
   private AccountDTO account;
+  private ContactDTO contact;
+  private OpportunityDTO opportunity;
 }

@@ -15,16 +15,16 @@ public class NewContactDTO {
   private String email;
   private String companyName;
   private Long salesRepId;
-//  private Long accountId; TODO [JA] - Talk with Jegor and maybe add account id?
+  private Long accountId;
 
 
   // ---------- Custom constructor from LeadDTO ----------
-  public NewContactDTO(LeadDTO leadDTO/*, Long accountId*/) { // TODO [JA] - Update in case we want to use account id.
+  public NewContactDTO(LeadDTO leadDTO, Long accountId) {
     this.name = leadDTO.getName();
     this.phoneNumber = leadDTO.getPhoneNumber();
     this.email = leadDTO.getEmail();
     this.companyName = leadDTO.getCompanyName();
     this.salesRepId = leadDTO.getSalesRep();
-//    this.accountId = accountId;
+    this.accountId = accountId;
   }
 }

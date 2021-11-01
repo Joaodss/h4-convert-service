@@ -58,7 +58,7 @@ public class ConvertLeadServiceImpl implements ConvertLeadService {
     salesRepDTO = getSalesRepById(leadToConvert.getSalesRep());
 
     // 5. Create Contact
-    contactDTO = createNewContact(new NewContactDTO(leadToConvert));
+    contactDTO = createNewContact(new NewContactDTO(leadToConvert, accountID));
 
     // 6. Create Opportunity
     opportunityDTO = createNewOpportunity(
@@ -68,7 +68,7 @@ public class ConvertLeadServiceImpl implements ConvertLeadService {
     // 7. Delete Lead
     deleteLead(leadId);
 
-    return new ConvertInformationDTO(contactDTO, salesRepDTO, opportunityDTO, accountDTO);
+    return new ConvertInformationDTO(salesRepDTO, accountDTO, contactDTO, opportunityDTO);
   }
 
   public LeadDTO getLeadById(long id) {
