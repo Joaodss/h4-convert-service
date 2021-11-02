@@ -37,7 +37,7 @@ public class ConvertControllerImpl implements ConvertController {
     }
   }
 
-  @PatchMapping("/opportunity/{id}/{status}")
+  @PutMapping("/opportunity/{id}/{status}")
   @ResponseStatus(OK)
   public OpportunityDTO convertOpportunityStatus(@PathVariable("id") long opportunityId, @PathVariable("status") String status) {
     try {
