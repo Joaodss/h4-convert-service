@@ -4,11 +4,12 @@ import com.ironhack.convert.util.validator.anotations.ValidCountry;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Arrays;
 import java.util.List;
 
 public class CountryValidator implements ConstraintValidator<ValidCountry, String> {
 
-  private final List<String> validCountryAToD = List.of(
+  private final List<String> validCountryAToD = Arrays.asList(
       "AFGHANISTAN", "ALBANIA", "ALGERIA", "AMERICAN SAMOA", "ANDORRA", "ANGOLA", "ANGUILLA", "ANTARCTICA",
       "ANTIGUA & BARBUDA", "ARGENTINA", "ARMENIA", "ARUBA", "AUSTRALIA", "AUSTRIA", "AZERBAIJAN", "ÅLAND ISLANDS",
       "BAHAMAS", "BAHRAIN", "BANGLADESH", "BARBADOS", "BELARUS", "BELGIUM", "BELIZE", "BENIN", "BERMUDA", "BHUTAN",
@@ -20,7 +21,7 @@ public class CountryValidator implements ConstraintValidator<ValidCountry, Strin
       "CÔTE D’IVOIRE", "DENMARK", "DJIBOUTI", "DOMINICA", "DOMINICAN REPUBLIC"
   );
 
-  private final List<String> validCountryEToH = List.of(
+  private final List<String> validCountryEToH = Arrays.asList(
       "ECUADOR", "EGYPT", "EL SALVADOR", "EQUATORIAL GUINEA", "ERITREA", "ESTONIA", "ESWATINI", "ETHIOPIA",
       "FALKLAND ISLANDS", "FAROE ISLANDS", "FIJI", "FINLAND", "FRANCE", "FRENCH GUIANA", "FRENCH POLYNESIA",
       "FRENCH SOUTHERN TERRITORIES", "GABON", "GAMBIA", "GEORGIA", "GERMANY", "GHANA", "GIBRALTAR", "GREECE",
@@ -28,7 +29,7 @@ public class CountryValidator implements ConstraintValidator<ValidCountry, Strin
       "HAITI", "HEARD & MCDONALD ISLANDS", "HONDURAS", "HONG KONG SAR CHINA", "HUNGARY"
   );
 
-  private final List<String> validCountryIToN = List.of(
+  private final List<String> validCountryIToN = Arrays.asList(
       "ICELAND", "INDIA", "INDONESIA", "IRAN", "IRAQ", "IRELAND", "ISLE OF MAN", "ISRAEL", "KAZAKHSTAN", "KUWAIT",
       "LAOS", "LATVIA", "LEBANON", "LESOTHO", "LIBERIA", "LIBYA", "LIECHTENSTEIN", "LITHUANIA", "LUXEMBOURG",
       "MACAO SAR CHINA", "MADAGASCAR", "MALAWI", "MALAYSIA", "MALDIVES", "MALI", "MALTA", "MARSHALL ISLANDS",
@@ -38,7 +39,7 @@ public class CountryValidator implements ConstraintValidator<ValidCountry, Strin
       "NORTH MACEDONIA", "NORTHERN MARIANA ISLANDS", "NORWAY", "NONE"
   );
 
-  private final List<String> validCountryOToT = List.of(
+  private final List<String> validCountryOToT = Arrays.asList(
       "OMAN", "PAKISTAN", "PALAU", "PALESTINIAN TERRITORIES", "PANAMA", "PAPUA NEW GUINEA", "PARAGUAY", "PERU",
       "PHILIPPINES", "PITCAIRN ISLANDS", "POLAND", "PORTUGAL", "PUERTO RICO", "QATAR", "ROMANIA", "RUSSIA", "RWANDA",
       "RÉUNION", "SAMOA", "SAN MARINO", "SAUDI ARABIA", "SENEGAL", "SERBIA", "SEYCHELLES", "SIERRA LEONE", "SINGAPORE",
@@ -50,7 +51,7 @@ public class CountryValidator implements ConstraintValidator<ValidCountry, Strin
       "TURKEY", "TURKMENISTAN", "TURKS & CAICOS ISLANDS", "TUVALU"
   );
 
-  private final List<String> validCountryUToZ = List.of(
+  private final List<String> validCountryUToZ = Arrays.asList(
       "UGANDA", "UKRAINE", "UNITED ARAB EMIRATES", "UNITED KINGDOM", "UNITED STATES", "URUGUAY", "US OUTLYING ISLANDS",
       "US VIRGIN ISLANDS", "UZBEKISTAN", "VANUATU", "VATICAN CITY", "VENEZUELA", "VIETNAM", "WALLIS & FUTUNA",
       "WESTERN SAHARA", "YEMEN", "ZAMBIA", "ZIMBABWE"
@@ -64,10 +65,10 @@ public class CountryValidator implements ConstraintValidator<ValidCountry, Strin
   @Override
   public boolean isValid(String country, ConstraintValidatorContext constraintValidatorContext) {
     if (country == null) return true;
-    if (country.isBlank()) return true; // It just checks if it exists.
+    if (country.trim().equals("")) return true; // It just checks if it exists.
 
     // Lists where separated to avoid iterating through the list as a whole.
-    var firstLetterUpperCase = country.toUpperCase().charAt(0);
+    char firstLetterUpperCase = country.trim().toUpperCase().charAt(0);
     if (firstLetterUpperCase >= 'A' && firstLetterUpperCase < 'E' || firstLetterUpperCase == 'Å') {
       return validCountryAToD.contains(country.trim().toUpperCase());
     } else if (firstLetterUpperCase >= 'E' && firstLetterUpperCase < 'I') {

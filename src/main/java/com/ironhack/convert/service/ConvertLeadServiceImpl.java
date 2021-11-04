@@ -128,7 +128,8 @@ public class ConvertLeadServiceImpl implements ConvertLeadService {
   private void restore() {
     for (Event key : events.keySet()) {
       switch (key) {
-        case CREATE_ACCOUNT -> accountProxy.remove(events.get(key));
+        case CREATE_ACCOUNT:
+          accountProxy.remove(events.get(key));
 //        case CREATE_CONTACT -> contactProxy.remove(events.get(key))
 //        case CREATE_OPPORTUNITY -> opportunityProxy.remove(events.get(key));
       }

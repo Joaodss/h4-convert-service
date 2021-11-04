@@ -27,10 +27,10 @@ public class IsDefinedAccountValidator implements ConstraintValidator<IsDefinedA
       } catch (Exception ignored) {
         // Log stuff.
       }
-    return !leadConvertDTO.getIndustry().isBlank() // If account id does not exist it requires an account body.
+    return !leadConvertDTO.getIndustry().trim().equals("") // If account id does not exist it requires an account body.
         && leadConvertDTO.getEmployeeCount() != null
-        && !leadConvertDTO.getCountry().isBlank()
-        && !leadConvertDTO.getCity().isBlank();
+        && !leadConvertDTO.getCountry().trim().equals("")
+        && !leadConvertDTO.getCity().trim().equals("");
   }
 
 }

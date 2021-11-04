@@ -20,10 +20,10 @@ public class ConvertOpportunityStatusServiceImpl implements ConvertOpportunitySt
 
   // -------------------- Service Methods --------------------
   public OpportunityDTO changeStatus(long id, String status) {
-    var storedOpportunity = opportunityProxy.getById(id);
+    OpportunityDTO storedOpportunity = opportunityProxy.getById(id);
     if (storedOpportunity == null) throw new NoSuchElementException("Id not found.");
 
-    var enumStatus = toStatus(status); // Will throw error if status not valid.
+    String enumStatus = toStatus(status); // Will throw error if status not valid.
     return storedOpportunity.getStatus().equals(enumStatus) ?
         storedOpportunity :
         opportunityProxy.changeStatus(id, enumStatus);
