@@ -12,11 +12,13 @@ public class EnumConverter {
       case "OPEN":
         return "open";
       case "CLOSED_WON":
+      case "WON":
         return "won";
       case "CLOSED_LOST":
+      case "LOST":
         return "lost";
       default:
-        throw new IllegalArgumentException("Invalid status. Please use a valid status [OPEN, CLOSED_WON, CLOSED_LOST].");
+        throw new IllegalArgumentException("Invalid status. Please use a valid status [OPEN, CLOSED_WON, WON, CLOSED_LOST, LOST].");
     }
   }
 

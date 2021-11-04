@@ -10,11 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ContactDTO {
+  private Long id;
   private String name;
   private String phoneNumber;
   private String email;
   private String companyName;
   private Long salesRepId;
   private Long accountId;
-  private Long id;
 }
